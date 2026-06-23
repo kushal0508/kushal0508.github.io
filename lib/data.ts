@@ -20,11 +20,18 @@ export const personalInfo = {
     "I am passionate about technology, problem-solving, and continuously improving my skills while preparing for MCA.",
   education: [
     {
+      degree: "Master of Computer Applications (MCA)",
+      institution: "Amrita Vishwa Vidyapeetham, Mysuru",
+      period: "Currently Pursuing",
+      description:
+        "Advanced studies in software engineering, system design, and modern web technologies.",
+    },
+    {
       degree: "Bachelor of Computer Applications (BCA)",
       institution: "Amrita Vishwa Vidyapeetham, Mysuru",
-      period: "Final Year",
+      period: "Completed",
       description:
-        "Foundation in programming, data structures, database management, and web development. Currently in final year.",
+        "Foundation in programming, data structures, database management, and web development.",
     },
   ],
   experience: {
