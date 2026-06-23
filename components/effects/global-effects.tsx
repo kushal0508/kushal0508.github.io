@@ -61,6 +61,7 @@ function Starfield() {
   useEffect(() => {
     if (!mountRef.current) return;
     const mount = mountRef.current;
+    const isTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -68,10 +69,10 @@ function Starfield() {
 
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, isTouch ? 1 : 2));
     mount.appendChild(renderer.domElement);
 
-    const starCount = 3000;
+    const starCount = isTouch ? 800 : 3000;
     const positions = new Float32Array(starCount * 3);
     const colors = new Float32Array(starCount * 3);
 
@@ -141,7 +142,7 @@ function Starfield() {
       mouseX = (e.clientX / window.innerWidth) * 2 - 1;
       mouseY = (e.clientY / window.innerHeight) * 2 - 1;
     };
-    window.addEventListener("mousemove", handleMouseMove);
+    if (!isTouch) window.addEventListener("mousemove", handleMouseMove);
 
     const handleResize = () => {
       camera.aspect = window.innerWidth / window.innerHeight;
@@ -153,20 +154,22 @@ function Starfield() {
     let animationId: number;
     const animate = () => {
       animationId = requestAnimationFrame(animate);
-      stars.rotation.y += 0.0002;
-      stars.rotation.x += 0.00008;
-      layerStars.rotation.y += 0.0004;
-      layerStars.rotation.x += 0.00015;
-      camera.position.x += (mouseX * 0.3 - camera.position.x) * 0.02;
-      camera.position.y += (-mouseY * 0.3 - camera.position.y) * 0.02;
-      camera.lookAt(scene.position);
+      stars.rotation.y += isTouch ? 0.0001 : 0.0002;
+      stars.rotation.x += isTouch ? 0.00004 : 0.00008;
+      layerStars.rotation.y += isTouch ? 0.0002 : 0.0004;
+      layerStars.rotation.x += isTouch ? 0.00008 : 0.00015;
+      if (!isTouch) {
+        camera.position.x += (mouseX * 0.3 - camera.position.x) * 0.02;
+        camera.position.y += (-mouseY * 0.3 - camera.position.y) * 0.02;
+        camera.lookAt(scene.position);
+      }
       renderer.render(scene, camera);
     };
     animate();
 
     return () => {
       cancelAnimationFrame(animationId);
-      window.removeEventListener("mousemove", handleMouseMove);
+      if (!isTouch) window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("resize", handleResize);
       mount.removeChild(renderer.domElement);
       starGeometry.dispose();
@@ -238,6 +241,9 @@ function GrainTexture() {
 
 function LenisScroll() {
   useEffect(() => {
+    const isTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+    if (isTouch) return;
+
     let lenisInstance: { destroy: () => void } | null = null;
     let rafId: number;
 
