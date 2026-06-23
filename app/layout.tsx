@@ -49,6 +49,26 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
+      <head>
+        <style>{`
+          @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+          }
+          @keyframes pulse-soft {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+          }
+          @keyframes aurora-spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+          .animate-float-slow { animation: float 6s ease-in-out infinite; }
+          .animate-pulse-soft { animation: pulse-soft 4s ease-in-out infinite; }
+          .animate-aurora-spin { animation: aurora-spin 20s linear infinite; }
+          .starfield-fallback { background: radial-gradient(ellipse at 50% 50%, rgba(10,10,30,1) 0%, rgba(5,5,5,1) 100%); }
+        `}</style>
+      </head>
       <body
         className={`${spaceGrotesk.variable} ${inter.variable} font-sans bg-oled text-zinc-100 antialiased selection:bg-violet-500/30 selection:text-white`}
       >
