@@ -51,6 +51,7 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <body
         className={`${spaceGrotesk.variable} ${inter.variable} font-sans bg-oled text-zinc-100 antialiased selection:bg-violet-500/30 selection:text-white`}
+        style={{ transform: "translateZ(0)" }}
       >
         <script dangerouslySetInnerHTML={{
           __html: `

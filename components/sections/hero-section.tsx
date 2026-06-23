@@ -4,8 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import {
   motion,
   useMotionValue,
-  useTransform,
-  useScroll,
 } from "framer-motion";
 import { Download, Mail, Layers, ChevronDown } from "lucide-react";
 import { EASE_OUT_EXPO } from "@/lib/utils";
@@ -64,8 +62,9 @@ function AnimatedGradientMesh() {
 
 function FloatingParticles({ count = 30 }: { count?: number }) {
   const [mounted, setMounted] = useState(false);
+  const isTouch = typeof window !== "undefined" && ("ontouchstart" in window || navigator.maxTouchPoints > 0);
   useEffect(() => { setMounted(true); }, []);
-  if (!mounted) return null;
+  if (!mounted || isTouch) return null;
 
   const particles = Array.from({ length: count }, (_, i) => ({
     id: i,
@@ -109,15 +108,17 @@ function FloatingParticles({ count = 30 }: { count?: number }) {
 }
 
 function ScrollIndicator() {
-  const { scrollYProgress } = useScroll();
-  const opacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
-  const y = useTransform(scrollYProgress, [0, 0.1], [0, 20]);
+  const [hidden, setHidden] = useState(false);
+  useEffect(() => {
+    const onScroll = () => { if (window.scrollY > window.innerHeight * 0.15) setHidden(true); };
+    window.addEventListener("scroll", onScroll, { passive: true, once: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  if (hidden) return null;
 
   return (
-    <motion.div
-      style={{ opacity, y }}
-      className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-    >
+    <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-float-slow">
       <span className="text-[10px] font-medium uppercase tracking-[0.3em] text-zinc-600">
         Scroll
       </span>
@@ -127,7 +128,7 @@ function ScrollIndicator() {
       >
         <ChevronDown className="w-4 h-4 text-zinc-500" />
       </motion.div>
-    </motion.div>
+    </div>
   );
 }
 

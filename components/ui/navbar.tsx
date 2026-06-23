@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useRef } from "react";
 import { motion, AnimatePresence, useMotionValue } from "framer-motion";
 import Link from "next/link";
 import { Sparkles } from "lucide-react";
-import { EASE_OUT_EXPO } from "@/lib/utils";
+import { EASE_OUT_EXPO, throttle } from "@/lib/utils";
 
 const NAV_LINKS = [
   { label: "About", href: "#about" },
@@ -55,7 +55,7 @@ export function Navbar() {
   const [activeSection, setActiveSection] = React.useState("");
 
   useEffect(() => {
-    const handleScroll = () => {
+    const handleScroll = throttle(() => {
       setScrolled(window.scrollY > 400);
 
       const sections = NAV_LINKS.map((l) => l.href.slice(1));
@@ -69,7 +69,7 @@ export function Navbar() {
           }
         }
       }
-    };
+    }, 100);
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
