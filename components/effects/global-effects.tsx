@@ -215,7 +215,6 @@ function FloatingOrbs() {
             backgroundColor: orb.color,
             animationDelay: `${orb.delay}s`,
             animationDuration: `${6 + index * 2}s`,
-            willChange: "transform, opacity",
           }}
         />
       ))}
@@ -239,9 +238,6 @@ function GrainTexture() {
 
 function LenisScroll() {
   useEffect(() => {
-    const isTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
-    if (isTouch) return;
-
     let lenisInstance: { destroy: () => void } | null = null;
     let rafId: number;
 
@@ -276,14 +272,14 @@ function LenisScroll() {
 
 export function GlobalEffects() {
   return (
-    <div aria-hidden className="fixed inset-0 z-0 pointer-events-none" style={{ transform: "translateZ(0)" }}>
+    <>
       <LenisScroll />
       <AuroraBackground />
       <FloatingOrbs />
       <Starfield />
       <GrainTexture />
       <CursorFollower />
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/30" />
-    </div>
+      <div aria-hidden className="pointer-events-none fixed inset-0 z-0 bg-gradient-to-b from-transparent via-transparent to-black/30" />
+    </>
   );
 }

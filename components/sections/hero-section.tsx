@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import {
   motion,
   useMotionValue,
+  useTransform,
+  useScroll,
 } from "framer-motion";
 import { Download, Mail, Layers, ChevronDown } from "lucide-react";
 import { EASE_OUT_EXPO } from "@/lib/utils";
@@ -46,11 +48,10 @@ function AnimatedGradientMesh() {
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden">
       <motion.div
-        className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] opacity-[0.15]"
+        className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] opacity-30"
         style={{
           background:
             "conic-gradient(from 0deg at 50% 50%, rgba(139,92,246,0.3) 0deg, rgba(59,130,246,0.2) 90deg, rgba(6,182,212,0.2) 180deg, rgba(139,92,246,0.3) 270deg, rgba(59,130,246,0.2) 360deg)",
-          willChange: "transform",
         }}
         animate={{ rotate: 360 }}
         transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
@@ -108,17 +109,15 @@ function FloatingParticles({ count = 30 }: { count?: number }) {
 }
 
 function ScrollIndicator() {
-  const [hidden, setHidden] = useState(false);
-  useEffect(() => {
-    const onScroll = () => { if (window.scrollY > window.innerHeight * 0.15) setHidden(true); };
-    window.addEventListener("scroll", onScroll, { passive: true, once: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  if (hidden) return null;
+  const { scrollYProgress } = useScroll();
+  const opacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
+  const y = useTransform(scrollYProgress, [0, 0.1], [0, 20]);
 
   return (
-    <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-float-slow">
+    <motion.div
+      style={{ opacity, y }}
+      className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+    >
       <span className="text-[10px] font-medium uppercase tracking-[0.3em] text-zinc-600">
         Scroll
       </span>
@@ -128,7 +127,7 @@ function ScrollIndicator() {
       >
         <ChevronDown className="w-4 h-4 text-zinc-500" />
       </motion.div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -137,15 +136,19 @@ function GlowingOrbs() {
     <div className="absolute inset-0 pointer-events-none overflow-hidden">
       <motion.div
         className="absolute top-1/4 -left-32 w-96 h-96 rounded-full bg-violet-500/10 blur-[120px]"
-        animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
+        animate={{
+          scale: [1, 1.2, 1],
+          opacity: [0.3, 0.5, 0.3],
+        }}
         transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        style={{ willChange: "transform" }}
       />
       <motion.div
         className="absolute bottom-1/4 -right-32 w-80 h-80 rounded-full bg-blue-500/10 blur-[120px]"
-        animate={{ scale: [1.2, 1, 1.2], opacity: [0.4, 0.2, 0.4] }}
+        animate={{
+          scale: [1.2, 1, 1.2],
+          opacity: [0.4, 0.2, 0.4],
+        }}
         transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-        style={{ willChange: "transform" }}
       />
     </div>
   );
