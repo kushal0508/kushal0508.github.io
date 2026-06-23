@@ -43,15 +43,18 @@ function MagneticButton({ children }: { children: React.ReactNode }) {
 }
 
 function AnimatedGradientMesh() {
+  const isTouch = typeof window !== "undefined" && ("ontouchstart" in window || navigator.maxTouchPoints > 0);
+
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden">
       <motion.div
-        className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] opacity-30"
+        className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] opacity-[0.15]"
         style={{
           background:
             "conic-gradient(from 0deg at 50% 50%, rgba(139,92,246,0.3) 0deg, rgba(59,130,246,0.2) 90deg, rgba(6,182,212,0.2) 180deg, rgba(139,92,246,0.3) 270deg, rgba(59,130,246,0.2) 360deg)",
+          willChange: "transform",
         }}
-        animate={{ rotate: 360 }}
+        animate={isTouch ? {} : { rotate: 360 }}
         transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
       />
       <div className="absolute inset-0 bg-gradient-to-b from-oled via-oled/80 to-oled" />
@@ -133,6 +136,15 @@ function ScrollIndicator() {
 }
 
 function GlowingOrbs() {
+  const isTouch = typeof window !== "undefined" && ("ontouchstart" in window || navigator.maxTouchPoints > 0);
+
+  if (isTouch) return (
+    <div className="absolute inset-0 pointer-events-none overflow-hidden">
+      <div className="absolute top-1/4 -left-32 w-96 h-96 rounded-full bg-violet-500/10 blur-[120px]" />
+      <div className="absolute bottom-1/4 -right-32 w-80 h-80 rounded-full bg-blue-500/10 blur-[120px]" />
+    </div>
+  );
+
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden">
       <motion.div
@@ -142,6 +154,7 @@ function GlowingOrbs() {
           opacity: [0.3, 0.5, 0.3],
         }}
         transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        style={{ willChange: "transform, opacity" }}
       />
       <motion.div
         className="absolute bottom-1/4 -right-32 w-80 h-80 rounded-full bg-blue-500/10 blur-[120px]"
@@ -150,6 +163,7 @@ function GlowingOrbs() {
           opacity: [0.4, 0.2, 0.4],
         }}
         transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+        style={{ willChange: "transform, opacity" }}
       />
     </div>
   );

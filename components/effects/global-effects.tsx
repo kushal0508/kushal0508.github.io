@@ -60,8 +60,9 @@ function Starfield() {
 
   useEffect(() => {
     if (!mountRef.current) return;
-    const mount = mountRef.current;
     const isTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+    if (isTouch) return;
+    const mount = mountRef.current;
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -69,10 +70,10 @@ function Starfield() {
 
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, isTouch ? 1 : 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     mount.appendChild(renderer.domElement);
 
-    const starCount = isTouch ? 800 : 3000;
+    const starCount = 3000;
     const positions = new Float32Array(starCount * 3);
     const colors = new Float32Array(starCount * 3);
 
@@ -142,7 +143,7 @@ function Starfield() {
       mouseX = (e.clientX / window.innerWidth) * 2 - 1;
       mouseY = (e.clientY / window.innerHeight) * 2 - 1;
     };
-    if (!isTouch) window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mousemove", handleMouseMove);
 
     const handleResize = () => {
       camera.aspect = window.innerWidth / window.innerHeight;
@@ -154,22 +155,20 @@ function Starfield() {
     let animationId: number;
     const animate = () => {
       animationId = requestAnimationFrame(animate);
-      stars.rotation.y += isTouch ? 0.0001 : 0.0002;
-      stars.rotation.x += isTouch ? 0.00004 : 0.00008;
-      layerStars.rotation.y += isTouch ? 0.0002 : 0.0004;
-      layerStars.rotation.x += isTouch ? 0.00008 : 0.00015;
-      if (!isTouch) {
-        camera.position.x += (mouseX * 0.3 - camera.position.x) * 0.02;
-        camera.position.y += (-mouseY * 0.3 - camera.position.y) * 0.02;
-        camera.lookAt(scene.position);
-      }
+      stars.rotation.y += 0.0002;
+      stars.rotation.x += 0.00008;
+      layerStars.rotation.y += 0.0004;
+      layerStars.rotation.x += 0.00015;
+      camera.position.x += (mouseX * 0.3 - camera.position.x) * 0.02;
+      camera.position.y += (-mouseY * 0.3 - camera.position.y) * 0.02;
+      camera.lookAt(scene.position);
       renderer.render(scene, camera);
     };
     animate();
 
     return () => {
       cancelAnimationFrame(animationId);
-      if (!isTouch) window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("resize", handleResize);
       mount.removeChild(renderer.domElement);
       starGeometry.dispose();
@@ -197,6 +196,7 @@ function AuroraBackground() {
 }
 
 function FloatingOrbs() {
+  const isTouch = typeof window !== "undefined" && ("ontouchstart" in window || navigator.maxTouchPoints > 0);
   const orbs = [
     { size: 350, top: "15%", left: "10%", delay: 0, color: "rgba(139,92,246,0.04)" },
     { size: 250, top: "55%", left: "85%", delay: 2, color: "rgba(59,130,246,0.03)" },
@@ -209,15 +209,15 @@ function FloatingOrbs() {
       {orbs.map((orb, index) => (
         <div
           key={index}
-          className="absolute rounded-full blur-3xl animate-float-slow"
+          className={`absolute rounded-full blur-3xl ${isTouch ? "" : "animate-float-slow"}`}
           style={{
             width: `${orb.size}px`,
             height: `${orb.size}px`,
             top: orb.top,
             left: orb.left,
             backgroundColor: orb.color,
-            animationDelay: `${orb.delay}s`,
-            animationDuration: `${6 + index * 2}s`,
+            animationDelay: isTouch ? "0s" : `${orb.delay}s`,
+            animationDuration: isTouch ? "0s" : `${6 + index * 2}s`,
           }}
         />
       ))}
