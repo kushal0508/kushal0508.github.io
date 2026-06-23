@@ -13,7 +13,7 @@ export const personalInfo = {
   phone: "+91 77952 67355",
   github: "https://github.com/kushal0508",
   linkedin: "https://www.linkedin.com/in/kushal-r-0256a631b/",
-  resume: "https://drive.google.com/file/d/1xQyFVL72GuuSois08TcHYEpzZwH67Bje/view?usp=drivesdk",
+  resume: "https://drive.google.com/file/d/1xQyFVL72GuuSois08TcHYEpzZwH67Bje/view",
   about:
     "I am Kushal R, a final-year BCA student at Amrita Vishwa Vidyapeetham, Mysuru Campus, with practical experience in Odoo ERP, website customization, and frontend development. I have worked on live business projects, ERP systems, and static websites, focusing on building practical digital solutions.",
   aboutExtended:
