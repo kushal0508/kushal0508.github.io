@@ -60,8 +60,6 @@ function Starfield() {
 
   useEffect(() => {
     if (!mountRef.current) return;
-    const isTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
-    if (isTouch) return;
     const mount = mountRef.current;
 
     const scene = new THREE.Scene();
@@ -196,7 +194,6 @@ function AuroraBackground() {
 }
 
 function FloatingOrbs() {
-  const isTouch = typeof window !== "undefined" && ("ontouchstart" in window || navigator.maxTouchPoints > 0);
   const orbs = [
     { size: 350, top: "15%", left: "10%", delay: 0, color: "rgba(139,92,246,0.04)" },
     { size: 250, top: "55%", left: "85%", delay: 2, color: "rgba(59,130,246,0.03)" },
@@ -209,15 +206,16 @@ function FloatingOrbs() {
       {orbs.map((orb, index) => (
         <div
           key={index}
-          className={`absolute rounded-full blur-3xl ${isTouch ? "" : "animate-float-slow"}`}
+          className="absolute rounded-full blur-3xl animate-float-slow"
           style={{
             width: `${orb.size}px`,
             height: `${orb.size}px`,
             top: orb.top,
             left: orb.left,
             backgroundColor: orb.color,
-            animationDelay: isTouch ? "0s" : `${orb.delay}s`,
-            animationDuration: isTouch ? "0s" : `${6 + index * 2}s`,
+            animationDelay: `${orb.delay}s`,
+            animationDuration: `${6 + index * 2}s`,
+            willChange: "transform, opacity",
           }}
         />
       ))}

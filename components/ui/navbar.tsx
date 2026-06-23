@@ -84,19 +84,14 @@ export function Navbar() {
         animate={{ y: 0, opacity: 1, scale: 1 }}
         transition={{ duration: 0.8, ease: EASE_OUT_EXPO, delay: 0.3 }}
         className={`fixed top-0 left-0 right-0 z-[100] flex justify-center pt-4 sm:pt-6 px-4`}
+        style={{ transform: "translateZ(0)" }}
       >
         <motion.div
           className={`flex items-center gap-1 px-3 py-2 rounded-2xl transition-all duration-700 ${
             scrolled
               ? "bg-oled/85 backdrop-blur-2xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
-              : "bg-transparent"
+              : "bg-black/30 border border-white/[0.06]"
           }`}
-          style={scrolled ? {} : {
-            background: "rgba(5,5,5,0.4)",
-            backdropFilter: "blur(12px)",
-            WebkitBackdropFilter: "blur(12px)",
-            border: "1px solid rgba(255,255,255,0.06)",
-          }}
         >
           <Link
             href="/"
